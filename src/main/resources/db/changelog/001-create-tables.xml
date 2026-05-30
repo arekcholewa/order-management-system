@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+          http://www.liquibase.org/xml/ns/dbchangelog
+          https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- CUSTOMER -->
+
+    <changeSet id="001-create-customer" author="arek">
+
+        <createTable tableName="customer">
+
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_customer"
+                             nullable="false"/>
+            </column>
+
+            <column name="first_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"
+                             unique="true"
+                             uniqueConstraintName="uk_customer_email"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <!-- PRODUCT -->
+
+    <changeSet id="002-create-product" author="arek">
+
+        <createTable tableName="product">
+
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_product"
+                             nullable="false"/>
+            </column>
+
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="price" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="stock_quantity" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+    </changeSet>
+
+    <!-- CUSTOMER ORDER -->
+
+    <changeSet id="003-create-customer-order" author="arek">
+
+        <createTable tableName="order">
+
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_customer_order"
+                             nullable="false"/>
+            </column>
+
+            <column name="customer_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="order_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_order_customer"
+                baseTableName="order"
+                baseColumnNames="customer_id"
+                referencedTableName="customer"
+                referencedColumnNames="id"/>
+
+    </changeSet>
+
+    <!-- ORDER ITEM -->
+
+    <changeSet id="004-create-order-item" author="arek">
+
+        <createTable tableName="order_item">
+
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true"
+                             primaryKeyName="pk_order_item"
+                             nullable="false"/>
+            </column>
+
+            <column name="order_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="product_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="quantity" type="INT">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="unit_price" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <addForeignKeyConstraint
+                constraintName="fk_order_item_order"
+                baseTableName="order_item"
+                baseColumnNames="order_id"
+                referencedTableName="order"
+                referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_order_item_product"
+                baseTableName="order_item"
+                baseColumnNames="product_id"
+                referencedTableName="product"
+                referencedColumnNames="id"/>
+
+    </changeSet>
+
+</databaseChangeLog>
