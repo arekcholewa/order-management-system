@@ -7,8 +7,7 @@ import java.util.Set;
 
 public class ProductNameValidator implements ConstraintValidator<ValidProductName, String> {
 
-    private static final Set<String> FORBIDDEN_WORDS =
-            Set.of("test", "dummy", "fake");
+    private static final Set<String> FORBIDDEN_WORDS = Set.of("test", "dummy", "fake");
 
     @Override
     public void initialize(ValidProductName constraintAnnotation) {
