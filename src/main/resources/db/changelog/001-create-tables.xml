@@ -69,7 +69,7 @@
 
     <changeSet id="003-create-customer-order" author="arek">
 
-        <createTable tableName="order">
+        <createTable tableName="orders">
 
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true"
@@ -93,7 +93,7 @@
 
         <addForeignKeyConstraint
                 constraintName="fk_order_customer"
-                baseTableName="order"
+                baseTableName="orders"
                 baseColumnNames="customer_id"
                 referencedTableName="customer"
                 referencedColumnNames="id"/>
@@ -134,7 +134,7 @@
                 constraintName="fk_order_item_order"
                 baseTableName="order_item"
                 baseColumnNames="order_id"
-                referencedTableName="order"
+                referencedTableName="orders"
                 referencedColumnNames="id"/>
 
         <addForeignKeyConstraint
