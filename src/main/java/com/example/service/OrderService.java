@@ -5,9 +5,9 @@ import com.example.dto.OrderItemRequest;
 import com.example.entity.Customer;
 import com.example.entity.Order;
 import com.example.entity.OrderItem;
+import com.example.entity.OrderStatus;
 import com.example.entity.Product;
 import com.example.repository.CustomerRepository;
-import com.example.repository.OrderItemRepository;
 import com.example.repository.OrderRepository;
 import com.example.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -16,26 +16,23 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 @Service
-@Transactional
 public class OrderService {
 
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
-    private final OrderItemRepository orderItemRepository;
 
     public OrderService(
             CustomerRepository customerRepository,
             ProductRepository productRepository,
-            OrderRepository orderRepository,
-            OrderItemRepository orderItemRepository) {
+            OrderRepository orderRepository) {
 
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
-        this.orderItemRepository = orderItemRepository;
     }
 
+    @Transactional
     public Long createOrder(CreateOrderRequest request) {
 
         Customer customer = customerRepository.findByEmail(request.customerEmail())
@@ -45,9 +42,7 @@ public class OrderService {
         Order order = new Order();
         order.setCustomer(customer);
         order.setOrderDate(LocalDateTime.now());
-        order.setStatus("NEW");
-
-        order = orderRepository.save(order);
+        order.setStatus(OrderStatus.NEW);
 
         for (OrderItemRequest itemRequest : request.items()) {
 
@@ -62,18 +57,15 @@ public class OrderService {
             }
 
             OrderItem orderItem = new OrderItem();
-            orderItem.setOrder(order);
             orderItem.setProduct(product);
             orderItem.setQuantity(itemRequest.quantity());
             orderItem.setUnitPrice(product.getPrice());
 
-            orderItemRepository.save(orderItem);
-
             product.setStockQuantity(product.getStockQuantity() - itemRequest.quantity());
 
-            productRepository.save(product);
+            order.addItem(orderItem);
         }
 
-        return order.getId();
+        return orderRepository.save(order).getId();
     }
 }
