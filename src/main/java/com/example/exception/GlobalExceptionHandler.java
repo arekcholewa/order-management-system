@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleProductNotFound(ProductNotFoundException ex) {
+    public ResponseEntity<ErrorResponse> handleProductNotFound(ProductNotFoundException exception) {
 
         ErrorResponse response =
                 new ErrorResponse(
                         "PRODUCT_NOT_FOUND",
-                        ex.getMessage(),
+                        exception.getMessage(),
                         LocalDateTime.now());
 
         return ResponseEntity
